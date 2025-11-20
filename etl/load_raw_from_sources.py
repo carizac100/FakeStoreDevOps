@@ -2,17 +2,24 @@ import requests
 import psycopg2
 import json
 from datetime import datetime
+from dotenv import load_dotenv  
+import os   
 
 # ----------------------------------------
 # Configuración de conexión a PostgreSQL
 # ----------------------------------------
+load_dotenv()  # Carga las variables del archivo .env
+
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 5433,
-    "dbname": "postgres",
-    "user": "camilo",
-    "password": "camilo123"
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": int(os.getenv("DB_PORT", "5433")),
+    "dbname": os.getenv("DB_NAME", "postgres"),
+    "user": os.getenv("DB_USER", "camilo"),
+    "password": os.getenv("DB_PASSWORD"),
 }
+
+if not DB_CONFIG["password"]:
+    raise ValueError("DB_PASSWORD no está definido en el archivo .env")
 
 def get_connection():
     return psycopg2.connect(
